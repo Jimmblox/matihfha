@@ -134,7 +134,7 @@ end
 function library:new(props)
 	-- // properties
 	local textsize = props.textsize or props.TextSize or props.textSize or props.Textsize or 12
-	local font = props.font or props.Font or "Inconsolata"
+	local font = props.font or props.Font or "RobotoMono"
 	local name = props.name or props.Name or props.UiName or props.Uiname or props.uiName or props.username or props.Username or props.UserName or props.userName or "new ui"
 	local color = props.color or props.Color or props.mainColor or props.maincolor or props.MainColor or props.Maincolor or props.Accent or props.accent or Color3.fromRGB(225, 58, 81)
 	-- // variables
@@ -615,7 +615,7 @@ function library:loader(props)
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1,-10,0,20),
 			Position = UDim2.new(0.5,0,0,0),
-			Font = "Inconsolata",
+			Font = "RobotoMono",
 			Text = name,
 			TextColor3 = Color3.fromRGB(168, 52, 235),
 			TextXAlignment = "Center",
@@ -633,7 +633,7 @@ function library:loader(props)
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1,-10,0,20),
 			Position = UDim2.new(0.5,0,0,20),
-			Font = "Inconsolata",
+			Font = "RobotoMono",
 			Text = "Script: "..scriptname,
 			TextColor3 = Color3.fromRGB(255, 255, 255),
 			TextXAlignment = "Center",
@@ -716,7 +716,7 @@ function library:loader(props)
 				TextColor3 = Color3.fromRGB(255,255,255),
 				TextSize = 12,
 				TextStrokeTransparency = 0,
-				Font = "Inconsolata",
+				Font = "RobotoMono",
 				ZIndex = 9908,
 				Parent = button_holder
 			}

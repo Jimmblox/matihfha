@@ -1,0 +1,1337 @@
+local player = game:GetService("Players").LocalPlayer
+local mouse = player:GetMouse()
+mouse.TargetFilter = workspace.Level.Glass
+local grabbing = false
+local range = nil
+local hold = false
+
+game["Run Service"].RenderStepped:connect(
+   function()
+       setscriptable(game.Players.LocalPlayer, "SimulationRadius", true)
+       game.Players.LocalPlayer.SimulationRadius = math.huge, math.huge
+   end
+)
+game.Players.LocalPlayer.SimulationRadiusChanged:Connect(function(radius)
+   radius = 9e9
+   return radius
+end)
+
+local oldtrans = 0
+local oldtarget
+function change()
+         if mouse.Target ~= nil then
+            local target = mouse.Target
+            if hold == true and target.Transparency == 0 then
+                oldtrans = mouse.Target.Transparency
+                wait()
+                target.Transparency = 1
+                oldtarget = target
+            elseif hold == false then
+                oldtarget.Transparency = oldtrans
+            end    
+        end   
+end    
+
+local UIS = game:GetService("UserInputService")
+UIS.InputBegan:Connect(function(input)
+    local inputtype = input.UserInputType
+    if inputtype == Enum.UserInputType.MouseButton2 then
+        hold = true
+        change()
+    end    
+end)
+
+UIS.InputEnded:Connect(function(input)
+    local inputtype = input.UserInputType
+    if inputtype == Enum.UserInputType.MouseButton2 then
+        hold = false
+        change()
+    end    
+end)
+
+game:GetService("UserInputService").InputBegan:Connect(function(Key)
+	if Key.KeyCode == Enum.KeyCode.Y then
+		print("hai")
+		if mouse.Target ~= nil and mouse.Target.Parent.Name ~= "Workspace" and mouse.Target.Parent:FindFirstChildOfClass("Humanoid") ~= nil and grabbing == false then
+			targetchar = mouse.Target.Parent
+			if targetchar.HumanoidRootPart:FindFirstChild("Hold") then
+			    targetchar.HumanoidRootPart.Hold:Destroy()
+			end
+			if targetchar.HumanoidRootPart:FindFirstChild("Turn") then
+			    targetchar.HumanoidRootPart.Turn:Destroy()
+			end 
+			print(targetchar)
+			if targetchar.LowerTorso:FindFirstChild("Esp") then
+			    for _,v in pairs(targetchar.LowerTorso:GetDescendants()) do
+			        if v.Name == "Esp" then
+			            v.Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+			        end 
+			    end   
+			end    
+			grabbing = true
+			local bp = Instance.new("BodyPosition")
+			bp.P = 10000
+			bp.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+			bp.D = 100
+			range = (player.Character.HumanoidRootPart.Position - targetchar.HumanoidRootPart.Position).Magnitude
+			print(range)
+			
+			bp.Parent = targetchar.HumanoidRootPart
+			stepped = game:GetService("RunService").Heartbeat:Connect(function()
+				bp.Position = player.Character.Head.Position + (mouse.Hit.Position - player.Character.Head.Position).Unit * range
+			end)
+		end
+	end
+end)
+
+game:GetService("UserInputService").InputBegan:Connect(function(key)
+	if key.KeyCode == Enum.KeyCode.Y then
+		if grabbing == true and targetchar.HumanoidRootPart.BodyPosition then
+			stepped:Disconnect()
+			targetchar.HumanoidRootPart.BodyPosition:Destroy()
+			if targetchar.LowerTorso:FindFirstChild("Esp") then
+			    for _,v in pairs(targetchar.LowerTorso:GetDescendants()) do
+			        if v.Name == "Esp" then
+			            v:Destroy()
+			        end 
+			    end   
+			end  
+			wait(0.5)
+			grabbing = false
+		end
+	end
+end)
+
+mouse.Button1Down:Connect(function()
+	if grabbing == true and targetchar.HumanoidRootPart.BodyPosition then
+		stepped:Disconnect()
+		targetchar.HumanoidRootPart.BodyPosition:Destroy()
+		if targetchar.LowerTorso:FindFirstChild("Esp") then
+			    for _,v in pairs(targetchar.LowerTorso:GetDescendants()) do
+			        if v.Name == "Esp" then
+			            v:Destroy()
+			        end 
+			    end   
+			end 
+		local direction = mouse.Hit.LookVector
+		local forceMultipliter = 5000
+		targetchar.HumanoidRootPart:ApplyImpulse(direction * forceMultipliter)
+		wait(0.5)
+		grabbing = false
+	end
+end)
+
+mouse.WheelForward:Connect(function()
+	if range ~= nil then
+		range = range + 2.5
+	end
+end)
+
+mouse.WheelBackward:Connect(function()
+	if range ~= nil then
+		range = range - 2.5
+	end
+end)
+
+-- Gui to Lua
+-- Version: 3.2
+
+-- Instances:
+
+local BreakingPoint = Instance.new("ScreenGui")
+local Console = Instance.new("Frame")
+local Decoration = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local TextLabel_2 = Instance.new("TextLabel")
+local CommandBox = Instance.new("TextBox")
+local List = Instance.new("Frame")
+local Decoration_2 = Instance.new("Frame")
+local TextButton = Instance.new("TextButton")
+local ScrollingFrame = Instance.new("ScrollingFrame")
+local bring = Instance.new("TextButton")
+local forcebring = Instance.new("TextButton")
+local help = Instance.new("TextButton")
+local disablecams = Instance.new("TextButton")
+local kill = Instance.new("TextButton")
+local void = Instance.new("TextButton")
+local esp = Instance.new("TextButton")
+local loopwalkspeed = Instance.new("TextButton")
+local loopjumppower = Instance.new("TextButton")
+local noclip = Instance.new("TextButton")
+local infinitejump = Instance.new("TextButton")
+local loopvoid = Instance.new("TextButton")
+local bagtp = Instance.new("TextButton")
+local hide = Instance.new("TextButton")
+local Info = Instance.new("Frame")
+local TextLabel_3 = Instance.new("TextLabel")
+local Usage = Instance.new("TextLabel")
+local TextLabel_4 = Instance.new("TextLabel")
+local Description = Instance.new("TextLabel")
+local TextLabel_5 = Instance.new("TextLabel")
+local Shorter = Instance.new("TextLabel")
+
+--Properties:
+
+BreakingPoint.Name = "BreakingPoint"
+BreakingPoint.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+BreakingPoint.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+Console.Name = "Console"
+Console.Parent = BreakingPoint
+Console.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Console.BackgroundTransparency = 0.500
+Console.BorderColor3 = Color3.fromRGB(255, 255, 255)
+Console.Position = UDim2.new(0.688564479, 0, 0.0913580135, 0)
+Console.Size = UDim2.new(0, 329, 0, 398)
+Console.Visible = false
+
+Decoration.Name = "Decoration"
+Decoration.Parent = Console
+Decoration.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Decoration.BackgroundTransparency = 0.500
+Decoration.BorderColor3 = Color3.fromRGB(255, 255, 255)
+Decoration.BorderSizePixel = 0
+Decoration.Position = UDim2.new(-0.0184293389, 0, -0.0151870446, 0)
+Decoration.Size = UDim2.new(0, 340, 0, 410)
+
+TextLabel.Parent = Decoration
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1.000
+TextLabel.Position = UDim2.new(0.205882356, 0, 0.0146341473, 0)
+TextLabel.Size = UDim2.new(0, 200, 0, 70)
+TextLabel.Font = Enum.Font.Oswald
+TextLabel.Text = "Breaking Point"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 35.000
+TextLabel.TextStrokeTransparency = 0.200
+TextLabel.TextTransparency = 0.100
+TextLabel.TextWrapped = true
+
+TextLabel_2.Parent = Decoration
+TextLabel_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.BackgroundTransparency = 1.000
+TextLabel_2.Position = UDim2.new(0.205882356, 0, 0.578048766, 0)
+TextLabel_2.Size = UDim2.new(0, 200, 0, 70)
+TextLabel_2.Font = Enum.Font.Oswald
+TextLabel_2.Text = "V 1.0.0"
+TextLabel_2.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_2.TextSize = 35.000
+TextLabel_2.TextStrokeTransparency = 0.200
+TextLabel_2.TextTransparency = 0.100
+TextLabel_2.TextWrapped = true
+
+CommandBox.Name = "CommandBox"
+CommandBox.Parent = Console
+CommandBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+CommandBox.BackgroundTransparency = 0.500
+CommandBox.BorderColor3 = Color3.fromRGB(153, 153, 153)
+CommandBox.Position = UDim2.new(0.0972644389, 0, 0.291457295, 0)
+CommandBox.Size = UDim2.new(0, 265, 0, 54)
+CommandBox.Font = Enum.Font.Oswald
+CommandBox.PlaceholderColor3 = Color3.fromRGB(172, 251, 255)
+CommandBox.PlaceholderText = "Commands in here idiot"
+CommandBox.Text = ""
+CommandBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+CommandBox.TextScaled = true
+CommandBox.TextSize = 20.000
+CommandBox.TextStrokeTransparency = 0.200
+CommandBox.TextTransparency = 0.100
+CommandBox.TextWrapped = true
+
+List.Name = "List"
+List.Parent = BreakingPoint
+List.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+List.BackgroundTransparency = 0.500
+List.BorderColor3 = Color3.fromRGB(255, 255, 255)
+List.Position = UDim2.new(0.400000006, 0, 0.25, 0)
+List.Size = UDim2.new(0, 329, 0, 398)
+List.Visible = false
+
+Decoration_2.Name = "Decoration"
+Decoration_2.Parent = List
+Decoration_2.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Decoration_2.BackgroundTransparency = 0.500
+Decoration_2.BorderColor3 = Color3.fromRGB(255, 255, 255)
+Decoration_2.BorderSizePixel = 0
+Decoration_2.Position = UDim2.new(-0.0184293389, 0, -0.0151870446, 0)
+Decoration_2.Size = UDim2.new(0, 340, 0, 410)
+
+TextButton.Parent = Decoration_2
+TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.BackgroundTransparency = 1.000
+TextButton.Position = UDim2.new(0.0179999862, 0, 0.0149999848, 0)
+TextButton.Size = UDim2.new(0, 328, 0, 29)
+TextButton.Font = Enum.Font.Oswald
+TextButton.Text = "Click to close UI"
+TextButton.TextColor3 = Color3.fromRGB(255, 90, 90)
+TextButton.TextSize = 35.000
+TextButton.TextStrokeTransparency = 0.200
+TextButton.TextTransparency = 0.100
+
+ScrollingFrame.Parent = List
+ScrollingFrame.Active = true
+ScrollingFrame.BackgroundColor3 = Color3.fromRGB(218, 218, 218)
+ScrollingFrame.BackgroundTransparency = 1.000
+ScrollingFrame.BorderSizePixel = 0
+ScrollingFrame.Position = UDim2.new(0.0273556225, 0, 0.103015073, 0)
+ScrollingFrame.Size = UDim2.new(0, 164, 0, 349)
+ScrollingFrame.CanvasSize = UDim2.new(0, 0, 3, 0)
+
+bring.Name = "bring"
+bring.Parent = ScrollingFrame
+bring.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+bring.BackgroundTransparency = 0.700
+bring.BorderSizePixel = 0
+bring.Size = UDim2.new(0, 149, 0, 35)
+bring.Font = Enum.Font.Roboto
+bring.Text = "bring"
+bring.TextColor3 = Color3.fromRGB(255, 255, 255)
+bring.TextScaled = true
+bring.TextSize = 14.000
+bring.TextWrapped = true
+
+forcebring.Name = "forcebring"
+forcebring.Parent = ScrollingFrame
+forcebring.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+forcebring.BackgroundTransparency = 0.700
+forcebring.BorderSizePixel = 0
+forcebring.Position = UDim2.new(0, 0, 0.0351758786, 0)
+forcebring.Size = UDim2.new(0, 149, 0, 35)
+forcebring.Font = Enum.Font.Roboto
+forcebring.Text = "forcebring"
+forcebring.TextColor3 = Color3.fromRGB(255, 255, 255)
+forcebring.TextScaled = true
+forcebring.TextSize = 14.000
+forcebring.TextWrapped = true
+
+help.Name = "help"
+help.Parent = ScrollingFrame
+help.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+help.BackgroundTransparency = 0.700
+help.BorderSizePixel = 0
+help.Position = UDim2.new(0, 0, 0.0711892843, 0)
+help.Size = UDim2.new(0, 149, 0, 35)
+help.Font = Enum.Font.Roboto
+help.Text = "help"
+help.TextColor3 = Color3.fromRGB(255, 255, 255)
+help.TextScaled = true
+help.TextSize = 14.000
+help.TextWrapped = true
+
+disablecams.Name = "disablecams"
+disablecams.Parent = ScrollingFrame
+disablecams.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+disablecams.BackgroundTransparency = 0.700
+disablecams.BorderSizePixel = 0
+disablecams.Position = UDim2.new(0, 0, 0.109715246, 0)
+disablecams.Size = UDim2.new(0, 149, 0, 35)
+disablecams.Font = Enum.Font.Roboto
+disablecams.Text = "disablecams"
+disablecams.TextColor3 = Color3.fromRGB(255, 255, 255)
+disablecams.TextScaled = true
+disablecams.TextSize = 14.000
+disablecams.TextWrapped = true
+
+kill.Name = "kill"
+kill.Parent = ScrollingFrame
+kill.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+kill.BackgroundTransparency = 0.700
+kill.BorderSizePixel = 0
+kill.Position = UDim2.new(0, 0, 0.145728648, 0)
+kill.Size = UDim2.new(0, 149, 0, 35)
+kill.Font = Enum.Font.Roboto
+kill.Text = "kill"
+kill.TextColor3 = Color3.fromRGB(255, 255, 255)
+kill.TextScaled = true
+kill.TextSize = 14.000
+kill.TextWrapped = true
+
+void.Name = "void"
+void.Parent = ScrollingFrame
+void.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+void.BackgroundTransparency = 0.700
+void.BorderSizePixel = 0
+void.Position = UDim2.new(0, 0, 0.181742042, 0)
+void.Size = UDim2.new(0, 149, 0, 35)
+void.Font = Enum.Font.Roboto
+void.Text = "void"
+void.TextColor3 = Color3.fromRGB(255, 255, 255)
+void.TextScaled = true
+void.TextSize = 14.000
+void.TextWrapped = true
+
+esp.Name = "esp"
+esp.Parent = ScrollingFrame
+esp.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+esp.BackgroundTransparency = 0.700
+esp.BorderSizePixel = 0
+esp.Position = UDim2.new(0, 0, 0.219430476, 0)
+esp.Size = UDim2.new(0, 149, 0, 35)
+esp.Font = Enum.Font.Roboto
+esp.Text = "esp"
+esp.TextColor3 = Color3.fromRGB(255, 255, 255)
+esp.TextScaled = true
+esp.TextSize = 14.000
+esp.TextWrapped = true
+
+loopwalkspeed.Name = "loopwalkspeed"
+loopwalkspeed.Parent = ScrollingFrame
+loopwalkspeed.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+loopwalkspeed.BackgroundTransparency = 0.700
+loopwalkspeed.BorderSizePixel = 0
+loopwalkspeed.Position = UDim2.new(0, 0, 0.25879395, 0)
+loopwalkspeed.Size = UDim2.new(0, 149, 0, 35)
+loopwalkspeed.Font = Enum.Font.Roboto
+loopwalkspeed.Text = "loopwalkspeed"
+loopwalkspeed.TextColor3 = Color3.fromRGB(255, 255, 255)
+loopwalkspeed.TextScaled = true
+loopwalkspeed.TextSize = 14.000
+loopwalkspeed.TextWrapped = true
+
+loopjumppower.Name = "loopjumppower"
+loopjumppower.Parent = ScrollingFrame
+loopjumppower.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+loopjumppower.BackgroundTransparency = 0.700
+loopjumppower.BorderSizePixel = 0
+loopjumppower.Position = UDim2.new(0, 0, 0.298994958, 0)
+loopjumppower.Size = UDim2.new(0, 149, 0, 35)
+loopjumppower.Font = Enum.Font.Roboto
+loopjumppower.Text = "loopjumppower"
+loopjumppower.TextColor3 = Color3.fromRGB(255, 255, 255)
+loopjumppower.TextScaled = true
+loopjumppower.TextSize = 14.000
+loopjumppower.TextWrapped = true
+
+noclip.Name = "noclip"
+noclip.Parent = ScrollingFrame
+noclip.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+noclip.BackgroundTransparency = 0.700
+noclip.BorderSizePixel = 0
+noclip.Position = UDim2.new(0, 0, 0.338358432, 0)
+noclip.Size = UDim2.new(0, 149, 0, 35)
+noclip.Font = Enum.Font.Roboto
+noclip.Text = "noclip"
+noclip.TextColor3 = Color3.fromRGB(255, 255, 255)
+noclip.TextScaled = true
+noclip.TextSize = 14.000
+noclip.TextWrapped = true
+
+infinitejump.Name = "infinitejump"
+infinitejump.Parent = ScrollingFrame
+infinitejump.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+infinitejump.BackgroundTransparency = 0.700
+infinitejump.BorderSizePixel = 0
+infinitejump.Position = UDim2.new(0, 0, 0.38023448, 0)
+infinitejump.Size = UDim2.new(0, 149, 0, 35)
+infinitejump.Font = Enum.Font.Roboto
+infinitejump.Text = "infinitejump"
+infinitejump.TextColor3 = Color3.fromRGB(255, 255, 255)
+infinitejump.TextScaled = true
+infinitejump.TextSize = 14.000
+infinitejump.TextWrapped = true
+
+loopvoid.Name = "loopvoid"
+loopvoid.Parent = ScrollingFrame
+loopvoid.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+loopvoid.BackgroundTransparency = 0.700
+loopvoid.BorderSizePixel = 0
+loopvoid.Position = UDim2.new(0, 0, 0.417922914, 0)
+loopvoid.Size = UDim2.new(0, 149, 0, 35)
+loopvoid.Font = Enum.Font.Roboto
+loopvoid.Text = "loopvoid"
+loopvoid.TextColor3 = Color3.fromRGB(255, 255, 255)
+loopvoid.TextScaled = true
+loopvoid.TextSize = 14.000
+loopvoid.TextWrapped = true
+
+bagtp.Name = "bagtp"
+bagtp.Parent = ScrollingFrame
+bagtp.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+bagtp.BackgroundTransparency = 0.700
+bagtp.BorderSizePixel = 0
+bagtp.Position = UDim2.new(0, 0, 0.456448883, 0)
+bagtp.Size = UDim2.new(0, 149, 0, 35)
+bagtp.Font = Enum.Font.Roboto
+bagtp.Text = "bagtp"
+bagtp.TextColor3 = Color3.fromRGB(255, 255, 255)
+bagtp.TextScaled = true
+bagtp.TextSize = 14.000
+bagtp.TextWrapped = true
+
+hide.Name = "hide"
+hide.Parent = ScrollingFrame
+hide.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+hide.BackgroundTransparency = 0.700
+hide.BorderSizePixel = 0
+hide.Position = UDim2.new(0, 0, 0.494974852, 0)
+hide.Size = UDim2.new(0, 149, 0, 35)
+hide.Font = Enum.Font.Roboto
+hide.Text = "hide"
+hide.TextColor3 = Color3.fromRGB(255, 255, 255)
+hide.TextScaled = true
+hide.TextSize = 14.000
+hide.TextWrapped = true
+
+Info.Name = "Info"
+Info.Parent = List
+Info.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Info.BackgroundTransparency = 1.000
+Info.Position = UDim2.new(0.541033447, 0, 0.103015073, 0)
+Info.Size = UDim2.new(0, 143, 0, 348)
+
+TextLabel_3.Parent = Info
+TextLabel_3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_3.BackgroundTransparency = 2.000
+TextLabel_3.Size = UDim2.new(0, 150, 0, 35)
+TextLabel_3.Font = Enum.Font.Roboto
+TextLabel_3.Text = "Usage"
+TextLabel_3.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_3.TextSize = 25.000
+TextLabel_3.TextTransparency = 0.100
+TextLabel_3.TextWrapped = true
+
+Usage.Name = "Usage"
+Usage.Parent = Info
+Usage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Usage.BackgroundTransparency = 2.000
+Usage.Position = UDim2.new(0, 0, 0.120689653, 0)
+Usage.Size = UDim2.new(0, 150, 0, 29)
+Usage.Font = Enum.Font.Roboto
+Usage.Text = "bring [type]"
+Usage.TextColor3 = Color3.fromRGB(179, 179, 179)
+Usage.TextSize = 20.000
+Usage.TextTransparency = 0.100
+Usage.TextWrapped = true
+
+TextLabel_4.Parent = Info
+TextLabel_4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_4.BackgroundTransparency = 2.000
+TextLabel_4.Position = UDim2.new(0, 0, 0.304597706, 0)
+TextLabel_4.Size = UDim2.new(0, 150, 0, 35)
+TextLabel_4.Font = Enum.Font.Roboto
+TextLabel_4.Text = "Description"
+TextLabel_4.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_4.TextSize = 25.000
+TextLabel_4.TextTransparency = 0.100
+TextLabel_4.TextWrapped = true
+
+Description.Name = "Description"
+Description.Parent = Info
+Description.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Description.BackgroundTransparency = 2.000
+Description.Position = UDim2.new(0, 0, 0.405172408, 0)
+Description.Size = UDim2.new(0, 150, 0, 101)
+Description.Font = Enum.Font.Roboto
+Description.Text = "Teleports the npc of that type to you"
+Description.TextColor3 = Color3.fromRGB(179, 179, 179)
+Description.TextSize = 20.000
+Description.TextTransparency = 0.100
+Description.TextWrapped = true
+
+TextLabel_5.Parent = Info
+TextLabel_5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_5.BackgroundTransparency = 2.000
+TextLabel_5.Position = UDim2.new(0, 0, 0.672413826, 0)
+TextLabel_5.Size = UDim2.new(0, 150, 0, 35)
+TextLabel_5.Font = Enum.Font.Roboto
+TextLabel_5.Text = "Shorter"
+TextLabel_5.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel_5.TextSize = 25.000
+TextLabel_5.TextTransparency = 0.100
+TextLabel_5.TextWrapped = true
+
+Shorter.Name = "Shorter"
+Shorter.Parent = Info
+Shorter.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Shorter.BackgroundTransparency = 2.000
+Shorter.Position = UDim2.new(0, 0, 0.804597676, 0)
+Shorter.Size = UDim2.new(0, 150, 0, 59)
+Shorter.Font = Enum.Font.Roboto
+Shorter.Text = "br"
+Shorter.TextColor3 = Color3.fromRGB(179, 179, 179)
+Shorter.TextSize = 35.000
+Shorter.TextTransparency = 0.100
+Shorter.TextWrapped = true
+
+-- Scripts:
+
+local function QKHGTSA_fake_script() -- Console.LocalScript 
+	local script = Instance.new('LocalScript', Console)
+
+	local player = game:GetService("Players").LocalPlayer
+	local character = player.Character
+	
+	local nocliping = nil
+	local infjumping = false
+	local box = script.Parent.CommandBox
+	local faces = {"Front","Back","Bottom","Left","Right","Top"}
+	local esp = false
+	local loopws = false
+	local loopjp = false
+	local clip = true
+	local stepped
+	local function chamobject(tocham, color, transparent) --Cycles through every part in the player's character
+		for j, face in pairs(faces) do --Cycles through all 6 faces
+			local surface = Instance.new("SurfaceGui") --Insert a new surface gui into the game
+			surface.Parent = tocham --The surface gui is placed upon the part we are cycled on
+			surface.Name = "Esp" --So we can accsess it later
+			surface.Face = Enum.NormalId[face] --Sets the surface gui on the cycled face of the part
+			surface.AlwaysOnTop = true --So we can see the gui through walls
+			local mainFrame = Instance.new("Frame") --A surface gui is useless if it doesn't display anything
+			mainFrame.Parent = surface --Won't see the frame without it being on the surface gui
+			mainFrame.BackgroundColor3 = color --Set the color to what we have given it
+			mainFrame.BorderSizePixel = 0 --No border issues
+			mainFrame.BackgroundTransparency = transparent --Slightly see through it
+			mainFrame.Size = UDim2.new(1,0,1,0) --Fill the entire part
+		end
+	end
+	
+	game:GetService("UserInputService").InputBegan:Connect(function(input,gameProcessed)
+		if gameProcessed == false then -- Prevents this from running when typing in chat
+			if input.KeyCode == Enum.KeyCode.Quote then
+				script.Parent.Visible = true
+				wait(.01)
+				box:CaptureFocus()
+			end 
+		end
+	end)
+	
+	box.FocusLost:Connect(function(enterpress)
+		if enterpress then
+			script.Parent.Visible = false
+			if box.Text:match("bring") or box.Text:match("br") then
+				if box.Text:match("all") then
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							if v.Parent.Interact.ObjectName.Value ~= "Rose" and v.Parent.Interact.ObjectName.Value ~= "Manager" and v.Parent.Interact.ObjectName.Value ~= "SC Commander" and v.Parent.Interact.ObjectName.Value ~= "Rivera" and v.Parent.Interact.ObjectName.Value ~= "Jade" and v.Parent.Interact.ObjectName.Value ~= "Ryan" and v.Parent.Interact.ObjectName.Value ~= "Falcon" and v.Parent.Interact.ObjectName.Value ~= "Agent Hemlock" and v.Parent.Interact.ObjectName.Value ~= "Agent Nightshade" and v.Parent.Interact.ObjectName.Value ~= "Auctioneer" then
+								table.insert(targets, v.Parent)
+							end
+						end
+					end	
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							v.Humanoid.Jump = true
+							local pos = character.HumanoidRootPart.Position
+							v:MoveTo(pos)
+						end)
+					end
+				elseif box.Text:match("1") then
+					local target = nil
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							local char = v.Parent
+							local objectname = char.Interact.ObjectName
+							if box.Text:match(objectname.Value:lower()) then
+								target = char
+							end
+						end
+					end	
+					wait(.1)
+	
+					spawn(function()
+						target.Humanoid.Jump = true
+						local pos = character.HumanoidRootPart.Position
+						target:MoveTo(pos)
+					end)
+				else	
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							local char = v.Parent
+							local objectname = char.Interact.ObjectName
+							if box.Text:match(objectname.Value:lower()) then
+								table.insert(targets, char)
+							end
+						end
+					end	
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							v.Humanoid.Jump = true
+							local pos = character.HumanoidRootPart.Position
+							v:MoveTo(pos)
+						end)
+					end
+				end
+				-------------------------------------------------------------
+			elseif box.Text:match("forcebring") or box.Text:match("fb") then
+				if box.Text:match("all") then
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							if v.Parent.Interact.ObjectName.Value ~= "Rose" and v.Parent.Interact.ObjectName.Value ~= "Manager" and v.Parent.Interact.ObjectName.Value ~= "SC Commander" and v.Parent.Interact.ObjectName.Value ~= "Rivera" and v.Parent.Interact.ObjectName.Value ~= "Jade" and v.Parent.Interact.ObjectName.Value ~= "Ryan" and v.Parent.Interact.ObjectName.Value ~= "Falcon" and v.Parent.Interact.ObjectName.Value ~= "Agent Hemlock" and v.Parent.Interact.ObjectName.Value ~= "Agent Nightshade" and v.Parent.Interact.ObjectName.Value ~= "Auctioneer" then
+								table.insert(targets, v.Parent)
+							end
+						end
+					end		
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							v.Humanoid.Jump = true
+							local pos = character.HumanoidRootPart.Position
+							for i = 1,50 do
+								wait(0.05)
+								v:MoveTo(pos)
+							end	
+						end)
+					end
+				elseif box.Text:match("1") then
+					local target = nil
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							local char = v.Parent
+							local objectname = char.Interact.ObjectName
+							if box.Text:match(objectname.Value:lower()) then
+								target = char
+							end
+						end
+					end	
+					wait(.1)
+	
+					spawn(function()
+						target.Humanoid.Jump = true
+						for i = 1,50 do
+							local pos = character.HumanoidRootPart.Position
+							target:MoveTo(pos)
+						end
+					end)
+				else
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							local char = v.Parent
+							local objectname = char.Interact.ObjectName
+							if box.Text:match(objectname.Value:lower()) then
+								table.insert(targets, char)
+							end
+						end
+					end	
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							v.Humanoid.Jump = true
+							local pos = character.HumanoidRootPart.Position
+							for i = 1,50 do
+								wait(0.05)
+								v:MoveTo(pos)
+							end	
+						end)
+					end
+				end
+				---------------------------------------------------------------
+			elseif box.Text:match("help") or box.Text:match("cmds") then
+				script.Parent.Parent.List.Visible = true
+				----------------------------------
+			elseif box.Text:match("kill") or box.Text:match("kl") then
+				if box.Text:match("all") then
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							if v.Parent.Interact.ObjectName.Value ~= "Rose" and v.Parent.Interact.ObjectName.Value ~= "Manager" and v.Parent.Interact.ObjectName.Value ~= "SC Commander" and v.Parent.Interact.ObjectName.Value ~= "Rivera" and v.Parent.Interact.ObjectName.Value ~= "Jade" and v.Parent.Interact.ObjectName.Value ~= "Ryan" and v.Parent.Interact.ObjectName.Value ~= "Falcon" and v.Parent.Interact.ObjectName.Value ~= "Agent Hemlock" and v.Parent.Interact.ObjectName.Value ~= "Agent Nightshade" and v.Parent.Interact.ObjectName.Value ~= "Auctioneer" then
+								table.insert(targets, v.Parent)
+							end
+						end
+					end		
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							v.Humanoid.Jump = true
+							local pos = character.HumanoidRootPart.Position
+							v.UpperTorso:BreakJoints()
+	
+						end)
+					end
+				elseif box.Text:match("1") then
+					local target = nil
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							local char = v.Parent
+							local objectname = char.Interact.ObjectName
+							if box.Text:match(objectname.Value:lower()) then
+								target = char
+							end
+						end
+					end	
+					wait(.1)
+	
+					spawn(function()
+						for i = 1,50 do
+							target.Humanoid.Jump = true
+							local pos = character.HumanoidRootPart.Position
+							target.UpperTorso:BreakJoints()
+						end
+					end)
+				else
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							local char = v.Parent
+							local objectname = char.Interact.ObjectName
+							if box.Text:match(objectname.Value:lower()) then
+								table.insert(targets, char)
+							end
+						end
+					end	
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							v.Humanoid.Jump = true
+							local pos = character.HumanoidRootPart.Position
+							v.UpperTorso:BreakJoints()
+	
+						end)
+					end
+				end
+				------------------------------------------------------------------
+			elseif box.Text:match("void") or box.Text:match("v") then
+				local rng = Random.new()
+				if box.Text:match("all") then
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							if v.Parent.Interact.ObjectName.Value ~= "Rose" and v.Parent.Interact.ObjectName.Value ~= "Manager" and v.Parent.Interact.ObjectName.Value ~= "SC Commander" and v.Parent.Interact.ObjectName.Value ~= "Rivera" and v.Parent.Interact.ObjectName.Value ~= "Jade" and v.Parent.Interact.ObjectName.Value ~= "Ryan" and v.Parent.Interact.ObjectName.Value ~= "Falcon" and v.Parent.Interact.ObjectName.Value ~= "Agent Hemlock" and v.Parent.Interact.ObjectName.Value ~= "Agent Nightshade" and v.Parent.Interact.ObjectName.Value ~= "Auctioneer" then
+								table.insert(targets, v.Parent)
+							end
+						end
+					end	
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							if v:FindFirstChild("Humanoid").Sit == false then
+								--local pos = character.HumanoidRootPart.Position
+								--v:MoveTo(pos)
+								if v:FindFirstChild("Humanoid") then
+									v.Humanoid.Jump = true
+								end
+								if v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart:FindFirstChild("Turn") then
+									v.HumanoidRootPart.Turn:Destroy()
+								end
+								if v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart:FindFirstChild("Hold") then
+									v.HumanoidRootPart.Hold:Destroy()
+								end
+								if v:FindFirstChild("HumanoidRootPart") then
+									--[[
+									local force = Instance.new("VectorForce")
+									local att = Instance.new("Attachment")
+									att.Parent = v.HumanoidRootPart
+									force.Attachment0 = att
+									force.Force = Vector3.new(0,-6000000,0) 
+									force.ApplyAtCenterOfMass = true
+									force.Parent = v.HumanoidRootPart
+									spawn(function()
+										task.wait(0.5)
+										att:Destroy()
+										force:Destroy()
+									end)]]
+									local posto = Vector3.new(character.HumanoidRootPart.Position.X, -150, character.HumanoidRootPart.Position.Z)
+									v:MoveTo(posto)
+								end
+							end
+						end)
+					end
+				elseif box.Text:match("1") then
+					local target = nil
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							local char = v.Parent
+							local objectname = char.Interact.ObjectName
+							if box.Text:match(objectname.Value:lower()) then
+								target = char
+							end
+						end
+					end	
+					wait(.1)
+	
+					spawn(function()
+						if target:FindFirstChild("Humanoid").Sit == false then
+							local pos = character.HumanoidRootPart.Position
+							target:MoveTo(pos)
+							if target:FindFirstChild("Humanoid") then
+								target.Humanoid.Jump = true
+							end
+							if target:FindFirstChild("HumanoidRootPart") and target.HumanoidRootPart:FindFirstChild("Turn") then
+								target.HumanoidRootPart.Turn:Destroy()
+							end
+							if target:FindFirstChild("HumanoidRootPart") and target.HumanoidRootPart:FindFirstChild("Hold") then
+								target.HumanoidRootPart.Hold:Destroy()
+							end
+							if target:FindFirstChild("HumanoidRootPart") then
+								--[[local force = Instance.new("VectorForce")
+								local att = Instance.new("Attachment")
+								att.Parent = target.HumanoidRootPart
+								force.Attachment0 = att
+								force.Force = Vector3.new(0,-6000000,0) 
+								force.ApplyAtCenterOfMass = true
+								force.Parent = target.HumanoidRootPart
+								spawn(function()
+									task.wait(0.5)
+									att:Destroy()
+									force:Destroy()
+									
+								end)]]
+								local posto = Vector3.new(character.HumanoidRootPart.Position.X, -150, character.HumanoidRootPart.Position.Z)
+								target:MoveTo(posto)
+							end
+						end
+					end)
+				else
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							local char = v.Parent
+							local objectname = char.Interact.ObjectName
+							if box.Text:match(objectname.Value:lower()) then
+								table.insert(targets, char)
+							end
+						end
+					end	
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							if v:FindFirstChild("Humanoid").Sit == false then
+								local pos = character.HumanoidRootPart.Position
+								v:MoveTo(pos)
+								if v:FindFirstChild("Humanoid") then
+									v.Humanoid.Jump = true
+								end
+								if v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart:FindFirstChild("Turn") then
+									v.HumanoidRootPart.Turn:Destroy()
+								end
+								if v:FindFirstChild("HumanoidRootPart") and v.HumanoidRootPart:FindFirstChild("Hold") then
+									v.HumanoidRootPart.Hold:Destroy()
+								end
+								if v:FindFirstChild("HumanoidRootPart") then
+									--[[local force = Instance.new("VectorForce")
+									local att = Instance.new("Attachment")
+									att.Parent = v.HumanoidRootPart
+									force.Attachment0 = att
+									force.Force = Vector3.new(0,-6000000,0) 
+									force.ApplyAtCenterOfMass = true
+									force.Parent = v.HumanoidRootPart
+									spawn(function()
+										task.wait(0.5)
+										att:Destroy()
+										force:Destroy()
+									end)]]
+									local posto = Vector3.new(character.HumanoidRootPart.Position.X, -150, character.HumanoidRootPart.Position.Z)
+									v:MoveTo(posto)
+								end
+							end
+						end)
+					end
+				end
+			elseif box.Text:match("esp") or box.Text:match("chams") then
+				--first npc esp
+				esp = true
+				---------------- camera esp
+				for i,v in pairs(game.Workspace.Level.Glass:GetChildren()) do
+					if v.Name == "ExteriorCam" then
+						chamobject(v.Body, Color3.fromRGB(92, 179, 0), 0.6)
+					end
+				end
+				-------- computer esp
+				for i,v in pairs(game.Workspace.Level.Geometry:GetChildren()) do
+					if v.Name == "ManagerComputer" then
+						chamobject(v.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "Safe" then
+						chamobject(v.SafeDoor.Base, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "AccComputers" then
+						chamobject(v.Computer1.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "Computer" then
+						chamobject(v.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "PowerBox" then
+						if v.PowerDoor:FindFirstChild("Color") then
+							chamobject(v.PowerDoor.Union, v.PowerDoor.Color.Color, 0.4)
+						else
+							chamobject(v.PowerDoor.Union, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "KeycardBlue" then
+						chamobject(v.Base, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "SecurityRoom" then
+						chamobject(v.GuardSpot, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "ServerRoom" then
+						chamobject(v.Computer.Center, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "SecurityStation" then
+						chamobject(v.Computer.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "Room1" then
+						if v:FindFirstChild("Computer") then
+							chamobject(v.Computer.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "Room2" then
+						if v:FindFirstChild("Computer") then
+							chamobject(v.Computer.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "Room3" then
+						if v:FindFirstChild("Computer") then
+							chamobject(v.Computer.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "Room4" then
+						if v:FindFirstChild("Computer") then
+							chamobject(v.Computer.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "Room5" then
+						if v:FindFirstChild("Computer") then
+							chamobject(v.Computer.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "FileFolder" then
+						chamobject(v.Base, Color3.fromRGB(84, 255, 141), 0.4)
+					elseif v.Name == "1" then
+						if v:FindFirstChild("SecurityComputer1") then
+							chamobject(v.SecurityComputer1.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "2" then
+						if v:FindFirstChild("SecurityComputer1") then
+							chamobject(v.SecurityComputer1.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "3" then
+						if v:FindFirstChild("SecurityComputer1") then
+							chamobject(v.SecurityComputer1.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "4" then
+						if v:FindFirstChild("SecurityComputer1") then
+							chamobject(v.SecurityComputer1.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "5" then
+						if v:FindFirstChild("SecurityComputer1") then
+							chamobject(v.SecurityComputer1.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					elseif v.Name == "6" then
+						if v:FindFirstChild("SecurityComputer1") then
+							chamobject(v.SecurityComputer1.Screen, Color3.fromRGB(84, 255, 141), 0.4)
+						end
+					end
+				end
+				-----------------
+			elseif box.Text:match("loopwalkspeed") or box.Text:match("loopws") then
+				if loopws == true then
+					loopws = false
+				end
+				loopws = true
+				local num = box.Text:match("%d+")
+				spawn(function()
+					while wait(.1) do
+						if loopws == true and character:FindFirstChild("Humanoid") then
+							character.Humanoid.WalkSpeed = num
+						else
+							break
+						end
+					end
+				end)
+			elseif box.Text:match("unloopwalkspeed") or box.Text:match("unloopws") then
+				loopws = false
+			elseif box.Text:match("loopjumppower") or box.Text:match("loopjp") then
+				if loopjp == true then
+					loopjp = false
+				end
+				loopjp = true
+				local num = box.Text:match("%d+")
+				spawn(function()
+					while wait(.1) do
+						if loopjp == true and character:FindFirstChild("Humanoid") then
+							character.Humanoid.JumpPower = num
+						else
+							break
+						end
+					end
+				end)
+			elseif box.Text:match("unloopjumppower") or box.Text:match("unloopjp") then
+				loopjp = false
+	
+			elseif box.Text:match("noclip") or box.Text:match("nc") then
+				clip = false
+				wait(0.1)
+				local function noclipLoop()
+					if clip == false and character ~= nil then
+						for _, child in pairs(character:GetDescendants()) do
+							if child:IsA("BasePart") and child.CanCollide == true then
+								child.CanCollide = false
+							end
+						end
+					end
+				end
+				nocliping = game:GetService("RunService").Stepped:Connect(noclipLoop)
+			elseif box.Text:match("unnoclip") or box.Text:match("clip") then
+				if nocliping then
+					nocliping:Disconnect()
+				end
+				clip = true
+			elseif box.Text:match("infinitejump") or box.Text:match("infjump") then
+				infjumping = true
+			elseif box.Text:match("uninfinitejump") or box.Text:match("uninfjump") then
+				infjumping = false
+			elseif box.Text:match("bagtp") then
+				local targets = {}
+	
+				for _,v in pairs(workspace.Level.GroundBags:GetChildren()) do
+					local char = v
+					local objectname = char.Interact.ObjectName
+					if objectname.Value == "Cash" then
+						table.insert(targets, v)
+					end
+				end
+	
+				wait(.1)
+				for _,v in pairs(targets) do
+					spawn(function()
+						local posto = character.HumanoidRootPart.Position
+						local thing = v.Base
+						
+						local bp = Instance.new("BodyPosition")
+						bp.P = 100000
+						bp.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+						bp.D = 100
+						bp.Position = posto
+						bp.Parent = thing
+						
+						stepped = game:GetService("RunService").Heartbeat:Connect(function()
+							bp.Position = posto
+						end)
+					end)
+				end
+			elseif box.Text:match("hide") then
+				if box.Text:match("financier") then
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							if v.Parent.Interact.ObjectName.Value ~= "Rose" and v.Parent.Interact.ObjectName.Value ~= "Manager" and v.Parent.Interact.ObjectName.Value ~= "SC Commander" and v.Parent.Interact.ObjectName.Value ~= "Rivera" and v.Parent.Interact.ObjectName.Value ~= "Jade" and v.Parent.Interact.ObjectName.Value ~= "Ryan" and v.Parent.Interact.ObjectName.Value ~= "Falcon" and v.Parent.Interact.ObjectName.Value ~= "Agent Hemlock" and v.Parent.Interact.ObjectName.Value ~= "Agent Nightshade" and v.Parent.Interact.ObjectName.Value ~= "Auctioneer" then
+								table.insert(targets, v.Parent)
+							end
+						end
+					end	
+	
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							local posto = Vector3.new(-48.6, 14.9, -39.6)
+							v:MoveTo(posto)
+						end)
+					end
+				elseif box.Text:match("lakehouse") then
+					local targets = {}
+	
+					for _,v in pairs(workspace.Level.Actors:GetDescendants()) do
+						if v:IsA("BasePart") and v.Name == "HumanoidRootPart" then
+							if v.Parent.Interact.ObjectName.Value ~= "Rose" and v.Parent.Interact.ObjectName.Value ~= "Manager" and v.Parent.Interact.ObjectName.Value ~= "SC Commander" and v.Parent.Interact.ObjectName.Value ~= "Rivera" and v.Parent.Interact.ObjectName.Value ~= "Jade" and v.Parent.Interact.ObjectName.Value ~= "Ryan" and v.Parent.Interact.ObjectName.Value ~= "Falcon" and v.Parent.Interact.ObjectName.Value ~= "Agent Hemlock" and v.Parent.Interact.ObjectName.Value ~= "Agent Nightshade" and v.Parent.Interact.ObjectName.Value ~= "Auctioneer" then
+								table.insert(targets, v.Parent)
+							end
+						end
+					end	
+	
+					wait(.1)
+					for _,v in pairs(targets) do
+						spawn(function()
+							local posto = Vector3.new(21.7, 18.5, -30.7)
+							v:MoveTo(posto)
+						end)
+					end
+				end
+			end						
+		end
+	end)
+	
+	game:GetService("UserInputService").InputBegan:Connect(function(key)
+		if key.KeyCode == Enum.KeyCode.Space and infjumping == true then
+			character:FindFirstChildOfClass('Humanoid'):ChangeState(3)
+		end
+	end)
+	
+	spawn(function()
+		while true do
+			wait(1)
+			spawn(function()
+				if esp == true then
+					for i,v in pairs(game.Workspace.Level.Actors:GetChildren()) do 
+						if v then
+							local tooltip = nil
+							if v.Character:FindFirstChild("Interact") then
+								tooltip = v.Character.Interact.ObjectName
+							end
+							if v.Character:FindFirstChild("Head") then
+								v.Character.Head.Investigate.AlwaysOnTop = true
+							end
+							if v.Character:FindFirstChild("LowerTorso") and tooltip ~= nil then
+								if (not v.Character.LowerTorso:FindFirstChild("Esp"))then
+									if tooltip.Value == "Guard" or tooltip.Value == "SC Guard" or tooltip.Value == "Phoenix Operative" or tooltip.Value == "Halcyon Operative"  or tooltip.Value == "Security" or tooltip.Value == "Base Security" or tooltip.Value == "Staff" and (not v.Character.LowerTorso:FindFirstChild("Esp")) then
+										chamobject(v.Character.LowerTorso, Color3.fromRGB(255,0,0), 0.5)
+									elseif tooltip.Value == "Civilian" and (not v.Character.LowerTorso:FindFirstChild("Esp")) then
+										chamobject(v.Character.LowerTorso, Color3.fromRGB(255,255,255), 0.8)
+									elseif tooltip.Value == "Employee"  or tooltip.Value == "Janitor"  or tooltip.Value == "Analyst" or tooltip.Value == "Tech" or tooltip.Value == "Workshop Tech" or tooltip.Value == "Programmer" and (not v.Character.LowerTorso:FindFirstChild("Esp")) then
+										chamobject(v.Character.LowerTorso, Color3.fromRGB(255,255,0), 0.8)
+									elseif tooltip.Value == "Manager" or tooltip.Value == "Ryan" or tooltip.Value == "SC Commander" or tooltip.Value == "Falcon" or tooltip.Value == "Agent Nightshade" or tooltip.Value == "Agent Hemlock" or tooltip.Value == "Elite Operative" or tooltip.Value == "Auctioneer" and (not v.Character.LowerTorso:FindFirstChild("Esp")) then
+										chamobject(v.Character.LowerTorso, Color3.fromRGB(0, 179, 255), 0.2)
+									elseif tooltip.Value == "Rose" or tooltip.Value == "Rivera" or tooltip.Value == "Jade" and (not v.Character.LowerTorso:FindFirstChild("Esp")) then
+										chamobject(v.Character.LowerTorso, Color3.fromRGB(255, 149, 0), 0.2)
+									end
+								end
+							end
+						end
+					end
+				end
+			end)
+		end
+	end)
+end
+coroutine.wrap(QKHGTSA_fake_script)()
+local function FXHBS_fake_script() -- TextButton.LocalScript 
+	local script = Instance.new('LocalScript', TextButton)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Visible = false
+	end)
+end
+coroutine.wrap(FXHBS_fake_script)()
+local function PBOM_fake_script() -- bring.LocalScript 
+	local script = Instance.new('LocalScript', bring)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "bring [type]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Teleports the npc of that type to you"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "br"
+	end)
+end
+coroutine.wrap(PBOM_fake_script)()
+local function YGMWUD_fake_script() -- forcebring.LocalScript 
+	local script = Instance.new('LocalScript', forcebring)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "forcebring [type]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Teleports the npc of that type to you, very many times"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "fb"
+	end)
+end
+coroutine.wrap(YGMWUD_fake_script)()
+local function PCHCTVJ_fake_script() -- help.LocalScript 
+	local script = Instance.new('LocalScript', help)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "help"
+		script.Parent.Parent.Parent.Info.Description.Text = "Shows all the commands"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "cmds"
+	end)
+end
+coroutine.wrap(PCHCTVJ_fake_script)()
+local function BATLH_fake_script() -- disablecams.LocalScript 
+	local script = Instance.new('LocalScript', disablecams)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "disablecams [how to do it, tp or kill]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Disables the cams by bringing the operator or killing the operator"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "dc"
+	end)
+end
+coroutine.wrap(BATLH_fake_script)()
+local function IKAOACM_fake_script() -- kill.LocalScript 
+	local script = Instance.new('LocalScript', kill)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "kill [type]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Kills all npcs from that type"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "kl"
+	end)
+end
+coroutine.wrap(IKAOACM_fake_script)()
+local function BWOPJ_fake_script() -- void.LocalScript 
+	local script = Instance.new('LocalScript', void)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "void [type]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Voids (teleports the npc to the void) all npcs from that type"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "v"
+	end)
+end
+coroutine.wrap(BWOPJ_fake_script)()
+local function IHFB_fake_script() -- esp.LocalScript 
+	local script = Instance.new('LocalScript', esp)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "esp"
+		script.Parent.Parent.Parent.Info.Description.Text = "Gives a cham of EVERY important objective/thing in the map"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "chams"
+	end)
+end
+coroutine.wrap(IHFB_fake_script)()
+local function BPTVTFT_fake_script() -- loopwalkspeed.LocalScript 
+	local script = Instance.new('LocalScript', loopwalkspeed)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "loopwalkspeed [number]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Constantly sets your walkspeed to that number"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "loopws"
+	end)
+end
+coroutine.wrap(BPTVTFT_fake_script)()
+local function TVWWE_fake_script() -- loopjumppower.LocalScript 
+	local script = Instance.new('LocalScript', loopjumppower)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "loopjumppower [number]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Constantly sets your jumppower to that number"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "loopjp"
+	end)
+end
+coroutine.wrap(TVWWE_fake_script)()
+local function YBBGII_fake_script() -- noclip.LocalScript 
+	local script = Instance.new('LocalScript', noclip)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "noclip"
+		script.Parent.Parent.Parent.Info.Description.Text = "Turns on noclip (cant turn off)"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "nc"
+	end)
+end
+coroutine.wrap(YBBGII_fake_script)()
+local function OBYWK_fake_script() -- infinitejump.LocalScript 
+	local script = Instance.new('LocalScript', infinitejump)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "infinitejump"
+		script.Parent.Parent.Parent.Info.Description.Text = "You can jump in the air"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "infjump"
+	end)
+end
+coroutine.wrap(OBYWK_fake_script)()
+local function VWAJJ_fake_script() -- loopvoid.LocalScript 
+	local script = Instance.new('LocalScript', loopvoid)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "loopvoid [type]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Constantly voids that type, even if someone spawned in after the command"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "constantvoid"
+	end)
+end
+coroutine.wrap(VWAJJ_fake_script)()
+local function VEUCLIR_fake_script() -- bagtp.LocalScript 
+	local script = Instance.new('LocalScript', bagtp)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "bagtp"
+		script.Parent.Parent.Parent.Info.Description.Text = "Teleports all bags to you"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "bagtp"
+	end)
+end
+coroutine.wrap(VEUCLIR_fake_script)()
+local function KPDXM_fake_script() -- hide.LocalScript 
+	local script = Instance.new('LocalScript', hide)
+
+	script.Parent.MouseButton1Click:Connect(function()
+		script.Parent.Parent.Parent.Info.Usage.Text = "hide [map]"
+		script.Parent.Parent.Parent.Info.Description.Text = "Hides all npcs in the specified map into a room (useful for financier and lakehouse)"
+		script.Parent.Parent.Parent.Info.Shorter.Text = "hide"
+	end)
+end
+coroutine.wrap(KPDXM_fake_script)()

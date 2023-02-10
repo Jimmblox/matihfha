@@ -559,7 +559,7 @@ local function QKHGTSA_fake_script() -- Console.LocalScript
 	local script = Instance.new('LocalScript', Console)
 
 	local player = game:GetService("Players").LocalPlayer
-	local character = player.Character
+	local character = player:WaitForChild("Character")
 	
 	local nocliping = nil
 	local infjumping = false

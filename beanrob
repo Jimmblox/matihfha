@@ -559,7 +559,7 @@ local function QKHGTSA_fake_script() -- Console.LocalScript
 	local script = Instance.new('LocalScript', Console)
 
 	local player = game:GetService("Players").LocalPlayer
-	local character = player:WaitForChild("Character")
+	local character = player.Character
 	
 	local nocliping = nil
 	local infjumping = false
@@ -1140,7 +1140,18 @@ local function QKHGTSA_fake_script() -- Console.LocalScript
 						end)
 					end
 				end
-			end						
+			elseif box.Text:match("loudgun") then
+			if box.Text:match("mm20") then
+				local weapon = game.Players.LocalPlayer.Status.Weapons.MM20
+				weapon.Mods.Value = "Tactical_Laser|Stock_Stock|Sight_Mini Sight|Grip_Folding Grip|"
+			elseif box.Text:match("raven") then
+				local weapon = game.Players.LocalPlayer.Status.Weapons.Raven
+				weapon.Mods.Value = "Sight_Glow Sight|Tactical_Laser|"
+			elseif box.Text:match("k45") then
+				local weapon = game.Players.LocalPlayer.Status.Weapons.K45
+				weapon.Mods.Value = "Tactical_Laser|"
+			end
+		end						
 		end
 	end)
 	
